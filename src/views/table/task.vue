@@ -83,6 +83,7 @@ padding: 10px 10px;"
       <div style="position: relative; height: 500px;" class="status-board">
 
         <my-table :table-data="list" @btnClick="openDialog('insert')">
+
           <el-table-column label="任务名称">
             <template slot-scope="scope">
               {{ scope.row.author }}
@@ -114,7 +115,6 @@ padding: 10px 10px;"
               <div style="display: inline-block;  margin:0 10px">
                 <i class="el-icon-d-arrow-right fake-btn" style="cursor:pointer;"></i>
               </div>
-
               <!--              {{ scope.row.title }}-->
             </template>
           </el-table-column>

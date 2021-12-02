@@ -4,8 +4,10 @@
       style="text-align: right; display:flex; justify-content:space-between; margin-bottom: 10px"
     >
       <div style="padding: 10px 0" class="bigger-font-14">
-        <span>
-          项目列表
+        <span style="color: #999999">
+          <slot name="title-text">
+               项目列表
+          </slot>
         </span>
       </div>
       <button
