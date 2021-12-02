@@ -155,10 +155,19 @@
       </div>
     </el-card>
 
-    <el-dialog title="增加成员" :visible.sync="dialog.visible">
-      <el-form :model="dialog.temp">
-        <el-form-item label="成员工号" :label-width="formLabelWidth">
+    <el-dialog :title="dialog.title" :visible.sync="dialog.visible">
+      <el-form :model="dialog.content">
+        <el-form-item v-if="dialog.mode=='insert'" label="添加人员" :label-width="formLabelWidth">
           <my-input width="220px" height="40px"/>
+        </el-form-item>
+
+        <el-form-item v-else :label-width="formLabelWidth">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            placeholder="请输入内容"
+            v-model="textarea2">
+          </el-input>
         </el-form-item>
       </el-form>
 
@@ -191,7 +200,11 @@ export default {
         { color: '#6f7ad3', percentage: 100 }
       ],
       dialog: {
-        visible: false
+        visible: false,
+        title: '',
+        content: '',
+        mode: ''
+
       }
     }
 
@@ -204,17 +217,21 @@ export default {
   },
   methods: {
     openDialog(mode) {
+      const map = {
+        insert: '增加成员',
+        message: '留言'
+      }
       this.dialog.visible = true
-      this.dialog.title = mode
+      this.dialog.title = map[mode]
+      this.dialog.mode = mode
     },
     groupHandler(btnIndex) {
       switch (btnIndex) {
         case 0:
-
-          this.$router.push('/example/member')
+          this.openDialog('message')
           break
         case 1:
-          this.openDialog('update')
+          // this.openDialog('update')
           break
       }
     }
@@ -254,4 +271,14 @@ export default {
 /deep/ .el-dialog {
   width: 30%;
 }
+
+/deep/ .el-dialog__body{
+  padding: 10px 20px;
+}
+
+/deep/ .el-dialog__body .el-form-item{
+  margin-bottom: 10px;
+}
+
+
 </style>

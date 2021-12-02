@@ -90,6 +90,21 @@ export const constantRoutes = [
   },
 
   {
+    path: '/message',
+    component: Layout,
+    name: 'Example',
+    meta: { title: 'Example', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'index',
+        name: 'Form',
+        component: () => import('@/views/message/index'),
+        meta: { title: 'Form', icon: 'form' }
+      }
+    ]
+  },
+
+  {
     path: '/form',
     component: Layout,
     children: [
