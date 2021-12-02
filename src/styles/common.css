@@ -1,0 +1,60 @@
+.giant-font-24 {
+  font-size: 24px;
+}
+
+.title-font-16 {
+  font-size: 16px;
+}
+
+.bigger-font-14 {
+  font-size: 14px;
+}
+
+.normal-font-12 {
+  font-size: 12px;
+}
+
+.small-font-10 {
+  font-size: 10px;
+}
+
+.link{
+  color: #00c1de;
+  cursor: pointer;
+}
+
+.link:hover{
+  color: #00c1de;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.split-line{
+  padding: 5px;
+  color: #b2b2b2;
+}
+
+.my-btn{
+  border-radius: 0;
+  border: 0;
+  padding: 10px 30px;
+  background-color: #00c1de;
+}
+
+.my-btn:hover{
+  background-color: #1bd6f3;
+}
+
+.fake-btn {
+  cursor: pointer;
+  transform: scale(1);
+  transition: transform 0.8s;
+}
+
+.fake-btn:hover{
+  /*position: relative;*/
+  /*top: 2px;*/
+  transform: scale(2);
+
+}
+

@@ -58,14 +58,26 @@ export const constantRoutes = [
   {
     path: '/example',
     component: Layout,
-    redirect: '/example/table',
+    redirect: '/example/project',
     name: 'Example',
     meta: { title: 'Example', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'table',
+        path: 'project',
         name: 'Table',
         component: () => import('@/views/table/index'),
+        meta: { title: 'Table', icon: 'table' }
+      },
+      {
+        path: 'task',
+        name: 'Table',
+        component: () => import('@/views/table/task'),
+        meta: { title: 'Table', icon: 'table' }
+      },
+      {
+        path: 'member',
+        name: 'Table',
+        component: () => import('@/views/table/member'),
         meta: { title: 'Table', icon: 'table' }
       },
       {
