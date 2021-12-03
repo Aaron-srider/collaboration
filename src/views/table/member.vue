@@ -31,11 +31,11 @@
               </div>
             </div>
           </div>
-
         </div>
       </el-card>
 
       <el-card class="box-card">
+
         <div slot="header" class="clearfix">
           <span>任务描述</span>
         </div>
