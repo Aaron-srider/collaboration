@@ -126,12 +126,13 @@ export default {
           const user = new UserDao().queryUserByJobIdAndPassword(this.loginForm.username, this.loginForm.password)
 
           if (user) {
-            this.$router.push({path: this.redirect || '/example'})
+            this.$store.commit('user/SET_TOKEN', user.id)
+            setToken(user.id)
+            this.$router.push({path:'/'})
             this.loading = false
           }
 
-          this.$store.commit('user/SET_TOKEN', user.id)
-          setToken(user.id)
+
           //
           // this.$store.dispatch('user/login', this.loginForm).then(() => {
           //   this.$router.push({ path: this.redirect || '/example' })

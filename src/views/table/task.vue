@@ -54,7 +54,7 @@
           <p>
             <span>项目人数</span>
             <span>：</span>
-            <span>{{}}</span>
+            <span>{{countMember}}</span>
           </p>
         </div>
 
@@ -195,10 +195,10 @@ import MyPageHeader from '@/components/MyPageHeader'
 import {getList} from '@/api/table'
 import OperationGroup from '@/components/OperationGroup'
 import {Dialog} from "@/model/page";
-import {Pro, Task} from "@/model/entity";
-import {ProDao, TaskDao} from "@/model/userDao";
+import {Pro, Task, U_T} from "@/model/entity";
+import {ProDao, TaskDao, U_TDao, UserDao} from "@/model/userDao";
 import {parseTimeSimple} from "@/utils";
-import {TaskService} from "@/model/service";
+import {TaskService, UserService} from "@/model/service";
 
 export default {
   name: 'task',
@@ -217,9 +217,20 @@ export default {
     }
   },
   computed: {
+    countMember() {
+      const count = 0
+      const idlist = this.list.map((task) => {
+          return task.id
+      })
+
+      return new U_TDao().countMembersByTidList(idlist)
+    },
     completedTaskPercent() {
 
       const count = this.list.length
+      if(count == 0) {
+        return 0
+      }
       let compeletion = 0
       this.list.forEach((item) => {
         compeletion += item.progress
@@ -263,7 +274,7 @@ export default {
     groupHandler(btnIndex, args) {
       switch (btnIndex) {
         case 0:
-          this.$router.push(`/example/member/${args}`)
+          this.$router.push(`/member/${args}`)
           break
         case 1:
           this.openDialog('update', args)

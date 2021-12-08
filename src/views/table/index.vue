@@ -152,7 +152,7 @@ export default {
     groupHandler(btnIndex, args) {
       switch (btnIndex) {
         case 0:
-          this.$router.push(`/example/task/${args}`)
+          this.$router.push(`/task/${args}`)
           break
         case 1:
           this.openDialog('update', args)
