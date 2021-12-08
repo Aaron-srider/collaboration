@@ -4,7 +4,7 @@
              label-position="left">
 
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">Collaboration System</h3>
       </div>
 
       <el-form-item prop="username">
@@ -157,6 +157,7 @@ export default {
 $bg: #283443;
 $light_gray: #fff;
 $cursor: #fff;
+$black: #000;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
   .login-container .el-input input {
@@ -166,6 +167,7 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
+
   .el-input {
     display: inline-block;
     height: 47px;
@@ -177,7 +179,7 @@ $cursor: #fff;
       -webkit-appearance: none;
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
-      color: $light_gray;
+      color: $black;
       height: 47px;
       caret-color: $cursor;
 
@@ -198,9 +200,11 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg: #2d3a4b;
+$bg: #eaedf1;
 $dark_gray: #889aa4;
 $light_gray: #eee;
+//$black: #eee;
+
 
 .login-container {
   min-height: 100%;
@@ -242,7 +246,7 @@ $light_gray: #eee;
 
     .title {
       font-size: 26px;
-      color: $light_gray;
+      color: $dark_gray;
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;
@@ -260,3 +264,5 @@ $light_gray: #eee;
   }
 }
 </style>
+
+

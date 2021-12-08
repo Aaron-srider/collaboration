@@ -212,7 +212,7 @@ export default {
 
 
 /deep/ .el-dialog {
-  width: 30%;
+  width: 24%;
 }
 
 /deep/ .el-dialog__body {
