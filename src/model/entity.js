@@ -11,9 +11,12 @@ function Table(arr, name, jsType, indexStart) {
     this.indexStart = indexStart
   }
 
-  for (const oneRow of this.arr) {
-    Object.setPrototypeOf(oneRow, jsType)
+  if (jsType) {
+    for (let oneRow of this.arr) {
+      Object.setPrototypeOf(oneRow, jsType.prototype)
+    }
   }
+
 }
 
 Table.prototype = {
@@ -54,8 +57,11 @@ Table.prototype = {
     return this.arr
   },
   getRowById(id) {
+
     for (const row of this.arr) {
+
       if (row.id == id) {
+
         return row
       }
     }
@@ -65,33 +71,30 @@ Table.prototype = {
     const index = this.arr.findIndex((item, index) => {
       return item.id == id
     })
-    if (index) {
+    if (index != undefined && index != null) {
       this.arr.splice(index, 1)
       localStorage.setItem(this.name, JSON.stringify(this))
     }
   },
   insertOne(item) {
-    if (this.beforeUpdate(item)) {
-      this.indexStart++
-      item.id = this.indexStart
-      this.arr.push(item)
-      localStorage.setItem(this.name, JSON.stringify(this))
-    }
+    this.indexStart++
+    item.id = this.indexStart
+    this.arr.push(item)
+    localStorage.setItem(this.name, JSON.stringify(this))
   },
   updateOneById(item) {
-    if (this.beforeUpdate(item)) {
-      const index = this.arr.findIndex((row, index) => {
-        return row.id == item.id
-      })
+    const index = this.arr.findIndex((row, index) => {
+      return row.id == item.id
+    })
 
-      const row = this.arr[index]
-      const id = row.id
-      Object.assign(row, item)
-      row.id = id
-    }
+    const row = this.arr[index]
+    const id = row.id
+    Object.assign(row, item)
+    row.id = id
+    localStorage.setItem(this.name, JSON.stringify(this))
   },
   beforeUpdate(item) {
-    if (this.jsType == Object.getPrototypeOf(item)) {
+    if (this.jsType.prototype == Object.getPrototypeOf(item)) {
       return true
     }
     return false
@@ -124,19 +127,23 @@ Pro.prototype = {
   constructor: Pro
 }
 
-
-function Task(id, name, startDate, endDate, description, importance, progress) {
+function Task(id, pid, name, startDate, endDate, description, importance, progress) {
   this.id = id
+  this.pid = pid
   this.name = name
   this.startDate = startDate
   this.endDate = endDate
   this.description = description
   this.importance = importance
   this.progress = progress
+
 }
 
 Task.prototype = {
-  constructor: Task
+  constructor: Task,
+  completion() {
+    return this.progress == 100
+  }
 }
 
 

@@ -71,13 +71,13 @@ export const constantRoutes = [
 
       },
       {
-        path: 'task',
+        path: 'task/:pid',
         name: 'Table',
         component: () => import('@/views/table/task'),
         meta: { title: 'Table', icon: 'table' }
       },
       {
-        path: 'member',
+        path: 'member/:tid',
         name: 'Table',
         component: () => import('@/views/table/member'),
         meta: { title: 'Table', icon: 'table' }
@@ -87,7 +87,8 @@ export const constantRoutes = [
         name: 'Tree',
         component: () => import('@/views/tree/index'),
         meta: { title: 'Tree', icon: 'tree' }
-      }
+      },
+
     ]
   },
 

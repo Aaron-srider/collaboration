@@ -3,23 +3,20 @@
   <div class="app-container">
     <my-page-header title="我的留言"/>
     <div id="board" class="message-container">
-      <div v-for='item in [1,1,1,1,1,1,1,1,1,1,1]' class="box">
+      <div v-for='msg in list' class="box">
         <el-card class="box-card">
           <div class="message-title">
-            <span>文超</span>
+            <span>{{msg.sender.name}}</span>
             <span class="split-line">|</span>
-            <span>2019027283</span>
+            <span>{{msg.sender.jobId}}</span>
           </div>
           <div class="message-content">
             <p>
-              The official guide assumes intermediate level knowledge of HTML, CSS, and JavaScript. If you are totally
-              new
-              to frontend development, it might not be the best idea to jump right into a framework as your first step -
-              grasp the basics then come back! Prior experience with other frameworks helps, but is not required.
+              {{msg.content}}
             </p>
           </div>
           <div class="message-footer">
-            <span>2021-02-09</span>
+            <span>{{msg.createDate}}</span>
           </div>
         </el-card>
       </div>
@@ -33,6 +30,10 @@ import MyTable from "@/components/MyTable";
 import MyInput from "@/components/MyInput";
 import OperationGroup from "@/components/OperationGroup";
 import MyPageHeader from "@/components/MyPageHeader";
+import {ProDao, TaskDao} from "@/model/userDao";
+import {parseTimeSimple} from "@/utils";
+import {Task} from "@/model/entity";
+import {MsgService} from "@/model/service";
 
 let resizeDetector = require('element-resize-detector')
 
@@ -45,7 +46,9 @@ export default {
     MyPageHeader
   },
   data() {
-    return {}
+    return {
+      list:[]
+    }
   },
   mounted() {
     const resizer = resizeDetector()
@@ -84,7 +87,53 @@ export default {
         }
       }
       // console.log('reLayout')
+    },
+
+    changeProgress(task, step) {
+      const progress = task.progress + step
+      if (progress > 100 || progress < 0) {
+        return
+      }
+
+      new TaskDao().changeProgress(task.id, step)
+      this.fetchData()
+    },
+    confirmDialog() {
+      this.dialog.temp.startDate = parseTimeSimple(this.dialog.temp.startDate)
+      this.dialog.temp.endDate = parseTimeSimple(this.dialog.temp.endDate)
+      if (this.dialog.getMode() == 'insert') {
+        this.dialog.temp.pid = this.pid
+        this.dialog.temp.progress = 0
+        new TaskDao().createOneTask(this.dialog.temp)
+      } else {
+        new TaskDao().updateOneTask(this.dialog.temp)
+      }
+      this.fetchData()
+      this.dialog.close()
+    },
+    openDialog(mode, item) {
+      if (mode == 'update') {
+        this.dialog.temp = Object.assign(new Task(), item)
+      }
+      this.dialog.open(mode)
+    },
+
+    groupHandler(btnIndex, args) {
+      switch (btnIndex) {
+        case 0:
+          this.$router.push(`/example/member/${args}`)
+          break
+        case 1:
+          this.openDialog('update', args)
+          break
+      }
+    },
+    fetchData() {
+      this.list = new MsgService().getMsgListByUid(this.$store.getters.token)
     }
+  },
+  created() {
+    this.fetchData()
   }
 }
 </script>

@@ -11,14 +11,14 @@
 
         <div style="position: absolute; left:0; bottom:0; top: 0; padding: 37px 0;">
           <p>
-            <span class="giant-font-24">40</span>
+            <span class="giant-font-24">{{ completedTaskPercent }}</span>
             <span class="split-line">/</span>
             <span class="giant-font-24">100</span>
           </p>
         </div>
 
         <div style="position: absolute; right:0">
-          <el-progress type="circle" :percentage="25"></el-progress>
+          <el-progress type="circle" :percentage="completedTaskPercent"></el-progress>
         </div>
 
       </div>
@@ -36,25 +36,25 @@
           <p>
             <span>项目名称</span>
             <span>：</span>
-            <span>项目1</span>
+            <span>{{ pro.name }}</span>
           </p>
 
           <p>
             <span>开始日期</span>
             <span>：</span>
-            <span>2021-02-02</span>
+            <span>{{ pro.startDate }}</span>
           </p>
 
           <p>
             <span>结束日期</span>
             <span>：</span>
-            <span>2021-02-02</span>
+            <span>{{ pro.endDate }}</span>
           </p>
 
           <p>
             <span>项目人数</span>
             <span>：</span>
-            <span>4</span>
+            <span>{{}}</span>
           </p>
         </div>
 
@@ -63,12 +63,10 @@
 
           <span style="display: inline-block; position:relative; bottom:140px;">项目备注：</span>
 
-          <span style="display: inline-block; overflow-y: scroll; width:300px; height:154px; box-shadow:0 2px 12px 0 rgba(0, 0, 0, 0.1);
+          <span class="auto-overflow" style="display: inline-block;  width:300px; height:154px; box-shadow:0 2px 12px 0 rgba(0, 0, 0, 0.1);
 padding: 10px 10px;"
           >
-            If you’d like to learn more about Vue before diving in, we created a video walking through the core
-            principles
-            and a sample project.
+            {{ pro.description }}
           </span>
         </div>
 
@@ -86,36 +84,36 @@ padding: 10px 10px;"
 
           <el-table-column label="任务名称">
             <template slot-scope="scope">
-              {{ scope.row.author }}
+              {{ scope.row.name }}
             </template>
           </el-table-column>
           <el-table-column label="开始时间">
             <template slot-scope="scope">
-              {{ scope.row.author }}
+              {{ scope.row.startDate }}
             </template>
           </el-table-column>
           <el-table-column label="截止时间">
             <template slot-scope="scope">
-              83475923745902739457293475923798
+              {{ scope.row.endDate }}
             </template>
           </el-table-column>
           <el-table-column label="重要程度">
             <template slot-scope="scope">
-              {{ scope.row.author }}
+              {{ scope.row.importance }}
             </template>
           </el-table-column>
           <el-table-column label="完成度" min-width="140">
             <template slot-scope="scope">
               <div style="display: inline-block; margin:0 10px">
-                <i class="el-icon-d-arrow-left fake-btn"></i>
+                <i @click="changeProgress(scope.row,-10)" class="el-icon-d-arrow-left fake-btn"></i>
               </div>
               <div style="display: inline-block; width: 150px">
-                <el-progress :text-inside="true" :stroke-width="26" :percentage="70"></el-progress>
+                <el-progress :text-inside="true" :stroke-width="26" :percentage="scope.row.progress"/>
               </div>
               <div style="display: inline-block;  margin:0 10px">
-                <i class="el-icon-d-arrow-right fake-btn" style="cursor:pointer;"></i>
+                <i @click="changeProgress(scope.row,10)" class="el-icon-d-arrow-right fake-btn"
+                   style="cursor:pointer;"></i>
               </div>
-              <!--              {{ scope.row.title }}-->
             </template>
           </el-table-column>
           <el-table-column label="操作" align="right">
@@ -123,7 +121,7 @@ padding: 10px 10px;"
               <operation-group
                 :text-arr="['详情', '修改', '删除']"
                 :center-handler="groupHandler"
-                :handler-args="[]"
+                :handler-args="[scope.row.id, scope.row, scope.row.id]"
               />
             </template>
           </el-table-column>
@@ -134,25 +132,25 @@ padding: 10px 10px;"
       </div>
     </el-card>
 
-    <el-dialog :title="dialog.title" :visible.sync="dialog.visible">
+    <el-dialog :title="dialog.getMode()" :visible.sync="dialog.visible" @close="dialog.temp={}">
       <el-form :model="dialog.temp">
-        <el-form-item label="任务名称" :label-width="formLabelWidth">
-          <my-input width="220px" height="40px"/>
+        <el-form-item label="任务名称">
+          <my-input v-model="dialog.temp.name" width="220px" height="40px"/>
           <!--          <input style="border: 1px solid #dcdfe6; width: 220px; height: 40px"/>-->
         </el-form-item>
 
-        <el-form-item label="开始日期" :label-width="formLabelWidth">
+        <el-form-item label="开始日期">
           <el-date-picker
-            v-model="value1"
+            v-model="dialog.temp.startDate"
             type="date"
             placeholder="开始日期"
           >
           </el-date-picker>
         </el-form-item>
 
-        <el-form-item label="截止日期" :label-width="formLabelWidth">
+        <el-form-item label="截止日期">
           <el-date-picker
-            v-model="value1"
+            v-model="dialog.temp.endDate"
             type="date"
             placeholder="截止日期"
           >
@@ -164,12 +162,16 @@ padding: 10px 10px;"
 
           <div style="display: inline-block; width:212px">
             <el-slider
-              v-model="value1"
+              v-model="dialog.temp.importance"
               :step="10"
             >
             </el-slider>
           </div>
         </div>
+
+        <el-form-item label="任务备注">
+          <my-input v-model="dialog.temp.description" width="220px" height="40px"/>
+        </el-form-item>
 
         <!--        <el-form-item label="重要程度" :label-width="formLabelWidth">-->
         <!--          <div style="float:right; width: 100px">-->
@@ -180,7 +182,7 @@ padding: 10px 10px;"
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="confirmDialog">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -190,8 +192,13 @@ padding: 10px 10px;"
 import MyTable from '@/components/MyTable'
 import MyInput from '@/components/MyInput'
 import MyPageHeader from '@/components/MyPageHeader'
-import { getList } from '@/api/table'
+import {getList} from '@/api/table'
 import OperationGroup from '@/components/OperationGroup'
+import {Dialog} from "@/model/page";
+import {Pro, Task} from "@/model/entity";
+import {ProDao, TaskDao} from "@/model/userDao";
+import {parseTimeSimple} from "@/utils";
+import {TaskService} from "@/model/service";
 
 export default {
   name: 'task',
@@ -203,40 +210,99 @@ export default {
   },
   data() {
     return {
-      value1: 10,
-      list: undefined,
-      dialog: {
-        visible: false,
-        temp: {},
-        title: ''
-      }
+      pro: {},
+      list: [],
+      dialog: new Dialog(),
+      pid: this.$route.params.pid
+    }
+  },
+  computed: {
+    completedTaskPercent() {
+
+      const count = this.list.length
+      let compeletion = 0
+      this.list.forEach((item) => {
+        compeletion += item.progress
+      })
+      return Math.floor(compeletion / (count))
     }
   },
   mounted() {
     this.fetchData()
   },
   methods: {
-    openDialog(mode) {
-      this.dialog.visible = true
-      this.dialog.title = mode
+    changeProgress(task, step) {
+      const progress = task.progress + step
+      if (progress > 100 || progress < 0) {
+        return
+      }
+
+      new TaskDao().changeProgress(task.id, step)
+      this.fetchData()
     },
-    groupHandler(btnIndex) {
+    confirmDialog() {
+      this.dialog.temp.startDate = parseTimeSimple(this.dialog.temp.startDate)
+      this.dialog.temp.endDate = parseTimeSimple(this.dialog.temp.endDate)
+      if (this.dialog.getMode() == 'insert') {
+        this.dialog.temp.pid = this.pid
+        this.dialog.temp.progress = 0
+        new TaskDao().createOneTask(this.dialog.temp)
+      } else {
+        new TaskDao().updateOneTask(this.dialog.temp)
+      }
+      this.fetchData()
+      this.dialog.close()
+    },
+    openDialog(mode, item) {
+      if (mode == 'update') {
+        this.dialog.temp = Object.assign(new Task(), item)
+      }
+      this.dialog.open(mode)
+    },
+
+    groupHandler(btnIndex, args) {
       switch (btnIndex) {
         case 0:
-
-          this.$router.push('/example/member')
+          this.$router.push(`/example/member/${args}`)
           break
         case 1:
-          this.openDialog('update')
+          this.openDialog('update', args)
+          break
+        case 2:
+          this.deleteOne(args)
           break
       }
     },
+    deleteOne(tid) {
+      this.$confirm('此操作将永久删除该任务, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        new TaskService().deleteByTid(tid)
+
+        this.fetchData()
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
+    },
     fetchData() {
       this.listLoading = true
-      getList().then(response => {
-        this.list = response.data.items
-        this.listLoading = false
-      })
+      this.pro = new ProDao().getOneProByPid(this.pid)
+      this.list = new TaskDao().getAllTasksByPid(this.pid)
+      this.listLoading = false
+      // getList().then(response => {
+      //   this.list = response.data.items
+      //   this.listLoading = false
+      // })
     }
   }
 }

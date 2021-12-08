@@ -16,11 +16,14 @@ export default {
     },
     centerHandler: {
       required: true
+    },
+    handlerArgs: {
+      required: false
     }
   },
   methods: {
     handleClick(btnIndex) {
-      this.centerHandler(btnIndex)
+      this.centerHandler(btnIndex, this.handlerArgs[btnIndex])
     }
   }
 }

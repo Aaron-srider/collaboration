@@ -1,19 +1,40 @@
 import {UserDao, MsgDao, ProDao, TaskDao, U_TDao} from './userDao'
 
-function Service() {
+function UserService() {
 
 }
 
-Service.prototype = {
-  constructor: Service,
+UserService.prototype = {
+  constructor: UserService,
   getAllUsersByTid(tid) {
     const uidList = new U_TDao().getUidListByTid(tid)
-    return new UserDao().queryUsersByUidList(uidList)
+
+    const joinTimeList = new U_TDao().getJoinTimeListByTid(tid)
+
+    const result = new UserDao().queryUsersByUidList(uidList)
+
+    result.forEach((item, index) => item.joinDate = joinTimeList[index])
+
+    return result
   },
-  join(uid, tid) {
-    const user = new UserDao().queryUserByUid(uid)
+  join(jobId, tid) {
+    const user = new UserDao().queryUserByJobId(jobId)
+
+    const users = new UserService().getAllUsersByTid(tid)
+
     if (user) {
-      new U_TDao().join(uid, tid)
+      let flag = false
+      users.forEach((u) => {
+        if (u.id == user.id) {
+          flag = true
+        }
+      })
+      if (flag) {
+        throw 1
+      }
+      new U_TDao().join(tid, user.id)
+    } else {
+      throw 0
     }
   }
 }
@@ -45,7 +66,6 @@ TaskService.prototype = {
 
   deleteByTid(tid) {
     new U_TDao().deleteByTid(tid)
-
     new TaskDao().deleteOneTask(tid)
   },
   deleteByTidList(tidList) {
@@ -80,4 +100,11 @@ MsgService.prototype = {
 
     return msgList
   }
+}
+
+export {
+  UserService,
+  ProService,
+  TaskService,
+  MsgService
 }

@@ -1,5 +1,5 @@
 <template>
-  <input :style="cus" class="my-input-style"/>
+  <input @input="handleInput" v-model="value" :style="cus" class="my-input-style"/>
 </template>
 
 <script>
@@ -19,9 +19,14 @@ export default {
     height: {
       required: false,
       default: '40px'
-    }
+    },
+    value: {}
   },
-  methods: {}
+  methods: {
+    handleInput() {
+      this.$emit('input', this.value)
+    }
+  }
 }
 </script>
 

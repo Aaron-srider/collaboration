@@ -58,3 +58,8 @@
 
 }
 
+.auto-overflow {
+  overflow:hidden auto;
+}
+
+

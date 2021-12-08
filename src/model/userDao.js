@@ -4,7 +4,7 @@ import * as daoUtils from "@/model/utils";
 import {getTable} from "@/model/utils";
 import {parseDate, use} from "element-ui";
 import user from "@/store/modules/user";
-import {parseTimeComplex} from "@/utils";
+import {parseTimeComplex, parseTimeSimple} from "@/utils";
 
 function UserDao() {
 }
@@ -20,28 +20,37 @@ UserDao.prototype = {
     daoUtils.persist('user', [user1, user2, user3, user4, user5])
   },
   queryUserByJobIdAndPassword(jobId, password) {
+    const userTable = new Table().getTable('user', User)
 
-    const userTable = getTable('user')
-
-    const user = userTable.find((item) => {
+    const user = userTable.getAllTableRows().find((item) => {
       return item.jobId == jobId && item.password == password
     })
 
     return user
   },
+
+  queryUserByJobId(jobId) {
+    const userTable = new Table().getTable('user', User)
+
+    const user = userTable.getAllTableRows().find((item) => {
+      return item.jobId == jobId
+    })
+
+    return user
+  },
   queryUsersByUidList(uidList) {
-    const userTable = getTable('user')
+    const userTable = new Table().getTable('user', User)
+
     const list = []
     for (const uid of uidList) {
       const row = userTable.getRowById(uid)
-      if (row) {
-        list.push()
-      }
+      list.push(row)
     }
+
     return list
   },
   queryUserByUid(uid) {
-    const userTable = getTable('user')
+    const userTable = new Table().getTable('user', User)
     return userTable.getRowById(uid)
   }
 }
@@ -60,9 +69,29 @@ U_TDao.prototype = {
     const u_t5 = new U_T(5, 5, 1, '2021-02-01')
     daoUtils.persist('u_t', [u_t1, u_t2, u_t3, u_t4, u_t5])
   },
+  getJoinTimeListByTid(tid) {
+    const u_tTable = new Table().getTable('u_t', U_T)
+    const uidList = []
+    for (const item of u_tTable.getAllTableRows()) {
+      if (item.tid == tid) {
+        uidList.push(item.joinDate)
+      }
+    }
+    return uidList
+  },
   deleteByTid(tid) {
     const u_tTable = new Table().getTable('u_t', U_T)
-    u_tTable.deleteById(tid)
+    const idlist = []
+    for (const item of u_tTable.getAllTableRows()) {
+      if (item.tid == tid) {
+        idlist.push(item.id)
+      }
+    }
+
+    for (const id of idlist) {
+      u_tTable.deleteById(id)
+    }
+
   },
   countMemberByTid(tid) {
     let count = 0
@@ -83,6 +112,7 @@ U_TDao.prototype = {
   },
   getUidListByTid(tid) {
     const u_tTable = new Table().getTable('u_t', U_T)
+
     const uidList = []
     for (const item of u_tTable.getAllTableRows()) {
       if (item.tid == tid) {
@@ -93,12 +123,15 @@ U_TDao.prototype = {
   },
   join(tid, uid) {
     const u_tTable = new Table().getTable('u_t', U_T)
-    const u_t = new U_T(undefined, uid, tid, parseTimeComplex(new Date()))
+    const u_t = new U_T(undefined, uid, tid, parseTimeSimple(new Date()))
+    console.log(u_tTable)
+    console.log(u_t)
     u_tTable.insertOne(u_t)
   },
   deleteByTidAndUidList(tid, uidList) {
     const u_tTable = new Table().getTable('u_t', U_T)
     const idList = []
+    console.log(tid, uidList)
     for (const item of u_tTable.getAllTableRows()) {
       let flag = false
       for (const uid of uidList) {
@@ -135,14 +168,26 @@ ProDao.prototype = {
     const proTable = new Table().getTable('pro', Pro)
     proTable.insertOne(pro)
   },
-  deleteByPid(pid) {
+  update(pro) {
+
     const proTable = new Table().getTable('pro', Pro)
-    proTable.deleteById(pid)
+    proTable.updateOneById(pro)
+  },
+  deleteByPid(pid) {
+    console.log(pid)
+    const proTable = new Table().getTable('pro', Pro)
+    for (let pro of proTable.getAllTableRows()) {
+      console.log(pro)
+      if (pro.id == pid) {
+        console.log(pro)
+        proTable.deleteById(pro.id)
+      }
+    }
   },
   getCreatedProsByUid(uid) {
     const proTable = new Table().getTable('pro', Pro)
     const pros = []
-    for (const row in proTable.getAllTableRows()) {
+    for (const row of proTable.getAllTableRows()) {
       if (row.uid == uid) {
         pros.push(row)
       }
@@ -163,20 +208,21 @@ function TaskDao() {
 TaskDao.prototype = {
   constructor: TaskDao,
   persist() {
-    const task1 = new Task(1, '任务1', '2021-02-01', '2021-02-01', '任务1', 60, 0)
-    const task2 = new Task(2, '任务2', '2021-02-01', '2021-02-01', '任务2', 60, 0)
-    const task3 = new Task(3, '任务3', '2021-02-01', '2021-02-01', '任务3', 60, 0)
-    const task4 = new Task(4, '任务4', '2021-02-01', '2021-02-01', '任务4', 60, 0)
-    const task5 = new Task(5, '任务5', '2021-02-01', '2021-02-01', '任务5', 60, 0)
+    const task1 = new Task(1, 1, '任务1', '2021-02-01', '2021-02-01', '任务1', 60, 0)
+    const task2 = new Task(2, 1, '任务2', '2021-02-01', '2021-02-01', '任务2', 60, 0)
+    const task3 = new Task(3, 1, '任务3', '2021-02-01', '2021-02-01', '任务3', 60, 0)
+    const task4 = new Task(4, 1, '任务4', '2021-02-01', '2021-02-01', '任务4', 60, 0)
+    const task5 = new Task(5, 1, '任务5', '2021-02-01', '2021-02-01', '任务5', 60, 0)
 
     daoUtils.persist('task', [task1, task2, task3, task4, task5])
   },
 
   getAllTasksByPid(pid) {
     const taskTable = new Table().getTable('task', Task)
-
     const tasks = []
-    taskTable.getAllTableRows().forEach((task) => {
+    const allRows = taskTable.getAllTableRows()
+    console.log(allRows)
+    allRows.forEach((task) => {
       if (task.pid == pid) {
         tasks.push(task)
       }
@@ -199,6 +245,7 @@ TaskDao.prototype = {
   },
   getOneByTid(tid) {
     const taskTable = new Table().getTable('task', Task)
+
     return taskTable.getRowById(tid)
   }
   ,
