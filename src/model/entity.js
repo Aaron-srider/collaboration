@@ -139,12 +139,6 @@ Task.prototype = {
   constructor: Task
 }
 
-const task1 = new Task(1, '任务1', '2021-02-01', '2021-02-01', '任务1', 60, 0)
-const task2 = new Task(2, '任务2', '2021-02-01', '2021-02-01', '任务2', 60, 0)
-const task3 = new Task(3, '任务3', '2021-02-01', '2021-02-01', '任务3', 60, 0)
-const task4 = new Task(4, '任务4', '2021-02-01', '2021-02-01', '任务4', 60, 0)
-const task5 = new Task(5, '任务5', '2021-02-01', '2021-02-01', '任务5', 60, 0)
-
 
 function U_T(id, uid, tid, joinDate) {
   this.id = id
@@ -169,11 +163,6 @@ Message.prototype = {
   constructor: Message
 }
 
-const message1 = new Message(1, 1, 2, '你好', '2021-02-01 23:33:33')
-const message2 = new Message(2, 1, 2, '你好', '2021-02-01 23:33:33')
-const message3 = new Message(3, 1, 3, '你好', '2021-02-01 23:33:33')
-const message4 = new Message(4, 1, 4, '你好', '2021-02-01 23:33:33')
-const message5 = new Message(5, 1, 5, '你好', '2021-02-01 23:33:33')
 
 export {
   User,

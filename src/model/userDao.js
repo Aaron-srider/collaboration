@@ -1,4 +1,4 @@
-import {Pro, U_T, User} from "@/model/entity";
+import {Message, Pro, Task, U_T, User} from "@/model/entity";
 import {Table} from "@/model/entity";
 import * as daoUtils from "@/model/utils";
 import {getTable} from "@/model/utils";
@@ -155,7 +155,104 @@ ProDao.prototype = {
   }
 }
 
+
+function TaskDao() {
+
+}
+
+TaskDao.prototype = {
+  constructor: TaskDao,
+  persist() {
+    const task1 = new Task(1, '任务1', '2021-02-01', '2021-02-01', '任务1', 60, 0)
+    const task2 = new Task(2, '任务2', '2021-02-01', '2021-02-01', '任务2', 60, 0)
+    const task3 = new Task(3, '任务3', '2021-02-01', '2021-02-01', '任务3', 60, 0)
+    const task4 = new Task(4, '任务4', '2021-02-01', '2021-02-01', '任务4', 60, 0)
+    const task5 = new Task(5, '任务5', '2021-02-01', '2021-02-01', '任务5', 60, 0)
+
+    daoUtils.persist('task', [task1, task2, task3, task4, task5])
+  },
+
+  getAllTasksByPid(pid) {
+    const taskTable = new Table().getTable('task', Task)
+
+    const tasks = []
+    taskTable.getAllTableRows().forEach((task) => {
+      if (task.pid == pid) {
+        tasks.push(task)
+      }
+    })
+    return tasks
+  },
+
+  createOneTask(taskInfo) {
+    const taskTable = new Table().getTable('task', Task)
+    taskTable.insertOne(taskInfo)
+  },
+  updateOneTask(taskInfo) {
+    const taskTable = new Table().getTable('task', Task)
+    taskTable.updateOneById(taskInfo)
+  }
+  ,
+  deleteOneTask(tid) {
+    const taskTable = new Table().getTable('task', Task)
+    taskTable.deleteById(tid)
+  },
+  getOneByTid(tid) {
+    const taskTable = new Table().getTable('task', Task)
+    return taskTable.getRowById(tid)
+  }
+  ,
+  changeProgress(tid, step) {
+    const taskTable = new Table().getTable('task', Task)
+
+    const task = taskTable.getRowById(tid)
+    task.progress += step
+    taskTable.store()
+  },
+  getPidByTid(tid) {
+    const taskTable = new Table().getTable('task', Task)
+    const task = taskTable.getRowById(tid)
+    return task.pid
+  }
+
+}
+
+function MsgDao() {
+
+}
+
+MsgDao.prototype = {
+  constructor: MsgDao,
+  persist() {
+    const message1 = new Message(1, 1, 2, '你好', '2021-02-01 23:33:33')
+    const message2 = new Message(2, 1, 2, '你好', '2021-02-01 23:33:33')
+    const message3 = new Message(3, 1, 3, '你好', '2021-02-01 23:33:33')
+    const message4 = new Message(4, 1, 4, '你好', '2021-02-01 23:33:33')
+    const message5 = new Message(5, 1, 5, '你好', '2021-02-01 23:33:33')
+
+    daoUtils.persist('msg', [message1, message2, message3, message4, message5])
+  },
+  getMsgListByUid(uid) {
+    const msgTable = new Table().getTable('msg', Message)
+    const msgList = []
+    msgTable.getAllTableRows().forEach((msg) => {
+      if (msg.rid == uid) {
+        msgList.push(msg)
+      }
+    })
+    return msgList
+  },
+  createOneMsg(msgInfo) {
+    const msgTable = new Table().getTable('msg', Message)
+    msgTable.insertOne(msgInfo)
+  }
+}
+
+
 export {
   UserDao,
-  U_TDao
+  U_TDao,
+  ProDao,
+  TaskDao,
+  MsgDao
 }
